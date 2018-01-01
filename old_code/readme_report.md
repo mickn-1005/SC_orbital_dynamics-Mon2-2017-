@@ -28,21 +28,25 @@ TLEの一般的なフォーマットは図１の通りである。
 ##  プログラムの解説
 　まず、テキスト形式で入力されたTLEを各要素ごとに配列内に入れる。今回は気象衛星「みどり」のものを使用した。TLEは以下。
 
-MIDORI (ADEOS)          
-
-1 24277U 96046A   09116.47337938 -.00000023  00000-0  73445-5 0   432
-
+MIDORI (ADEOS)  
+1 24277U 96046A   09116.47337938 -.00000023  00000-0  73445-5 0   432  
 2 24277  98.3597  83.2073 0002090  64.7512 295.3886 14.28595439661547
 
-工夫した点としては、element01に含まれるアルファベットはS（secret）かU（unclassified）であること、element10はelement01からアルファベットを消去したものであることから配列の要素を軌道要素に１対１対応させるようにしていることが挙げられる。
+工夫した点としては、element01に含まれるアルファベットはS（secret）かU（unclassified）であること
+element10はelement01からアルファベットを消去したものであることから配列の要素を軌道要素に
+１対１対応させるようにしていることが挙げられる。次に衛星の軌道長半径・衛星高度
+をelement16,element04を用いてケプラーの第３法則により算出した。
 
-　次に衛星の軌道長半径・衛星高度をelement16,element04を用いてケプラーの第３法則により算出した。
+　算出された長半径及びelement15,16,04を用いて時刻deltaにおける平均近点角を算出し、
+これと離心率（element13）を用いてニュートン法により軌道の離心近点角を求値した。
 
-　算出された長半径及びelement15,16,04を用いて時刻deltaにおける平均近点角を算出し、これと離心率（element13）を用いてニュートン法により軌道の離心近点角を求値した。
+　算出した離心近点角・軌道長半径・離心率によって軌道内の衛星の位置がわかる。
+これを３次元回転行列によって地心座標に座標変換をして衛星の位置を求めている。
+この際、回転角は近地点引数（element14）昇交点赤経（element12）を時間に関して補正したもの、
+及び軌道傾斜角（element11）を使用している。  
 
-　算出した離心近点角・軌道長半径・離心率によって軌道内の衛星の位置がわかる。これを３次元回転行列によって地心座標に座標変換をして衛星の位置を求めている。この際、回転角は近地点引数（element14）昇交点赤経（element12）を時間に関して補正したもの、及び軌道傾斜角（element11）を使用している。
-
-　これらのプログラムを時間経過delta_tごとに実行することで衛星の軌道を算出してmatplotlibによって３次元プロットしている。時刻０の時の点を黒点で強調した。結果については巻末に図を添付する。
+これらのプログラムを時間経過delta_tごとに実行することで衛星の軌道を算出してmatplotlibによって
+３次元プロットしている。時刻０の時の点を黒点で強調した。結果については巻末に図を添付する。
 
 ##  実行結果
 
@@ -53,8 +57,8 @@ MIDORI (ADEOS)
 
 ##  出典
 人工衛星位置推算の実際（最終版）（2017年８月７日アクセス）
-http://www.infra.kochi-tech.ac.jp/takagi/Geomatics/5Estimation2.pdf
+http://www.infra.kochi-tech.ac.jp/takagi/Geomatics/5Estimation2.pdf  
 NORAD Two-Line Element Set Format(２０１７年８月７日アクセス)
-http://celestrak.com/NORAD/documentation/tle-fmt.asp
+http://celestrak.com/NORAD/documentation/tle-fmt.asp  
 Definition of Two-line Element Set Coordinate System(NASA)（2017年８月７日アクセス）
 https://spaceflight.nasa.gov/realdata/sightings/SSapplications/Post/JavaSSOP/SSOP_Help/tle_def.html
